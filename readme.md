@@ -12,7 +12,7 @@ Los directorios y ficheros que se incluyen son:
 - client_modbus_tcp: Programa principal que pregunta el valor de las variables al dispositivo (el inversor) y lo transmite al servidor EmonCMS
 - congig.ini: Fichero con todos los parámetros de funcionamiento del programa
   - emoncms: Parámetros del servidor donde se manda la información
-  - Servidores modbus: Inversores u otros dispositivos de los que se recogen sus variables (bompas de calor, Smart meters ... ). Se diferencian del resto de variables porque tienen el campo 'url'
+  - Servidores modbus: Inversores u otros dispositivos de los que se recogen sus variables (bombas de calor, Smart meters ... ). Se diferencian del resto de variables porque tienen el campo 'url'
   - Registros: Variables que se leen de cada uno de los dispositivos. Se diferencian porque contienen la variable 'server'
 - logs: Directorio donde se guardan los logs. La configuración de estos logs se hace en el programa principal 'client_modbus_tcp'
 - tools: Herramientas para facilitar las pruebas para el desarrollo del código
