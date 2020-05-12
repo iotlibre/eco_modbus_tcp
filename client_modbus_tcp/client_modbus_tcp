@@ -1,0 +1,184 @@
+#!/usr/bin/env python
+import sys
+
+from pymodbus.client.sync import ModbusTcpClient as ModbusClient
+from pymodbus.constants import Endian
+from pymodbus.payload import BinaryPayloadDecoder
+
+import configparser
+
+# Librerias para transmitir a emonCMS
+import urllib.request
+import time
+
+import sched, threading
+
+import logging
+from logging.handlers import RotatingFileHandler
+
+# Para obtener mas detalle: level=logging.DEBUG
+# Para comprobar el funcionamiento: level=logging.INFO
+logging.basicConfig(
+        level=logging.INFO,
+        handlers=[RotatingFileHandler('./logs/log_modbus.log', maxBytes=10000000, backupCount=10)],
+        format='%(asctime)s %(levelname)s %(message)s',
+        datefmt='%m/%d/%Y %I:%M:%S %p')
+
+# Variables de calidad de la transmision al servidor
+tx_ok = 0
+tx_sent = 0
+
+#################################
+# Parseo de variables del .ini
+#################################
+parser = configparser.ConfigParser()
+parser.read('config.ini')
+
+# devuelve una list con todas las secciones
+sections = parser.sections()
+
+# Parseo de las variables de emonCMS
+tx_site = parser.get('emoncms','site')
+tx_cms_ip = parser.get('emoncms','cms_ip')
+tx_path = parser.get('emoncms','path')
+tx_key = parser.get('emoncms','key')
+
+
+# Lista para incluir los servidores
+servers_list=[]
+# Lista para incluir los registros
+registers_list=[]
+# Lista de registros ordenados por sservidor
+# [[aa,ab,ac],[ba,bb,bc],[ca,cb,cc],[da,db,dc]]
+server_register_list=[]
+
+
+# Listas separadas de servidores y registros
+for section in sections:
+    if parser.has_option(section,'url'):
+        servers_list.append(section)
+    if parser.has_option(section,'server'):
+        registers_list.append(section)
+
+
+# lista de serrvidores y registros de cada servidor
+# Para el uso de ini para la lectura de registros
+for server in servers_list:
+    registers_temp_list=[]
+    for register in registers_list:
+        if server == parser.get(register,'server'):
+            registers_temp_list.append(register)
+    server_register_list.append(registers_temp_list)
+logging.info("*" * 4 + ' Servidores')
+logging.info(servers_list)
+logging.info("*" * 4 + ' Registros agrupados por servidor')
+logging.info(server_register_list)
+
+###########################################
+# definicion de funciones
+###########################################
+
+def emoncms_tx(_tx_server,_tx_register,_value):
+
+    global tx_ok
+    global tx_sent
+
+    url = "http://{0}{1}/input/post.json".format(tx_cms_ip,tx_path)
+    string_node_name = "?node={0}".format(_tx_server)
+    string_name_value = "&json={0}:{1}".format(_tx_register,_value)
+    key_write = "&apikey={0}".format(tx_key)
+    full_url = url + string_node_name + string_name_value + key_write
+    logging.info(full_url)
+
+    #Transmision de datos al servidor emonCMS
+    response = urllib.request.urlopen(full_url)
+    web_page=response.read()
+    logging.info(web_page)
+    web_page_str = str(web_page)
+    tx_sent=tx_sent+1
+    if web_page_str.find("ok") >= 0:
+        tx_ok=tx_ok+1
+
+    logging.debug('tx_ok:' + str(tx_ok) + '/tx_sent:' + str(tx_sent))
+
+# FUNCION: preguntar holding valor por MODBUS
+def read_holding_value(tx_server_, tx_register_):
+
+    logging.debug('---- ' + tx_register_)
+
+    tx_start = int(parser.get(tx_register_,'start'))
+    tx_count = int(parser.get(tx_register_,'registers'))
+    tx_unit = int(parser.get(tx_server_,'unit'))
+    st_byteorder = parser.get(tx_server_,'byteorder')
+    exec("global tx_byteorder\ntx_byteorder = %s" % (st_byteorder))
+    st_wordorder = parser.get(tx_server_,'wordorder')
+    exec("global tx_wordorder\ntx_wordorder = %s" % (st_wordorder))
+
+    register_red = True
+    value = 33.33
+
+    try:
+        res1 = cli.read_holding_registers(tx_start, count=tx_count, unit=tx_unit)
+        logging.debug('tx_byteorder: '+ tx_byteorder)
+        logging.debug('tx_wordorder: '+ tx_wordorder)
+        decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                                     byteorder= tx_byteorder,
+                                                     wordorder= tx_wordorder)
+
+        st_tipe = "decoder.decode_" + parser.get(tx_register_,'tipe') + "()"
+        # logging.info("global decoded\ndecoded = %s" % (st_tipe))
+        exec("global decoded\ndecoded = %s" % (st_tipe))
+
+        value = "%.2f" % decoded
+
+        logging.debug('st_tipe: '+ st_tipe)
+        logging.debug("registros:" + str(res1.registers))
+
+    except:
+        # print("Error:", sys.exc_info()[0])
+        logging.warning("Error al leer el registro: " + tx_register_)
+        register_red = False
+
+    if register_red == True:
+        emoncms_tx(tx_server_,tx_register_,value)
+
+# FUNCION: Recorremos los registros del fichero .ini
+def matrix_reading(tm):
+    threading.Timer(tm, matrix_reading,args=[tm]).start()
+
+    logging.debug("*" * 4 + ' Recorremos servidores y sus registros')
+    for s in range(len(servers_list)):
+        tx_server = servers_list[s]
+        tx_url = parser.get(tx_server,'url')
+        tx_port = parser.get(tx_server,'port')
+
+        logging.debug('------ ' + tx_server)
+        global cli
+        cli = ModbusClient(tx_url, port=tx_port)
+        connexion = True
+        try:
+            # sin el assert el fallo en la conexión no se toma como error
+            assert cli.connect()
+        except:
+            connexion = False
+            logging.warning("Error en la conexión al Servidor")
+
+        if connexion == True:
+            for r in range(len(server_register_list[s])):
+                tx_register = server_register_list[s][r]
+
+                read_holding_value(tx_server, tx_register)
+
+# FUNCION: Enviar al servidor los datos comunes
+def parameters_info(ti):
+    threading.Timer(ti, parameters_info,args=[ti]).start()
+    logging.debug("*" * 4 + ' Parametros generales')
+    emoncms_tx(tx_site,'tx_ok',tx_ok)
+    emoncms_tx(tx_site,'tx_sent',tx_sent)
+
+###########################################
+# Ejecución temporal de las funciones
+###########################################
+
+matrix_reading(59.0)
+parameters_info(300.0)

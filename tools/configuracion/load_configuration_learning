@@ -1,0 +1,87 @@
+#!/usr/bin/env python
+
+import configparser
+
+# objeto del parser
+parser = configparser.ConfigParser()
+parser.read('config.ini')
+
+# Elementos del diccionario
+server_1 = parser['fronius']['url']
+var_1 = parser['cn_ener_d']['start']
+print("*" * 30)
+print('Elementos del diccionario')
+print(server_1)
+print(var_1)
+
+# Lista para incluir los servidores
+servers_list=[]
+# Lista para incluir los registros
+registers_list=[]
+# Lista para proceso de ordenar los registros
+registers_temp_list=[]
+# Lista de registros ordenados por sservidor
+# [[aa,ab,ac],[ba,bb,bc],[ca,cb,cc],[da,db,dc]]
+server_register_list=[]
+
+# devuelve una list con todas las secciones
+print("*" * 30)
+print('todas las secciones')
+sections = parser.sections()
+print (sections)
+
+# todos las variable del diccionario
+print("*" * 8 + 'variables del diccionario')
+for var in parser['cn_ener_h']:
+    print(var)
+
+print("*" * 8 + 'diccionario de un registro')
+for var in parser['bomba']:
+    print(var + ' -> ' + parser.get('bomba',var))
+    # print(parser['SERVER'][s])
+    # print(parser.get('bomba',s))
+
+print("*" * 8 + ' seccion fronius')
+print(parser['fronius'])
+print(parser['fronius']['port'])
+
+# Listas separadas de servidores y registros
+print("*" * 30)
+for section in sections:
+    if parser.has_option(section,'url'):
+        servers_list.append(section)
+    if parser.has_option(section,'server'):
+        registers_list.append(section)
+
+print("*" * 8 + ' Listas separadas: servidores, registros')
+print(servers_list)
+print(registers_list)
+
+print("*" * 8 + 'registros en servidores')
+for server in servers_list:
+    print ("**** " + server)
+    registers_temp_list=[]
+    for register in registers_list:
+        print("** " + register)
+        print("** " + parser.get(register,'server'))
+        if server == parser.get(register,'server'):
+            print('ok')
+            registers_temp_list.append(register)
+    print("** " + 'temporal de registros por servidor')
+    print(registers_temp_list)
+    server_register_list.append(registers_temp_list)
+print(servers_list)
+print(server_register_list)
+
+# Recorremos todos los servidores y sus registros
+print("*" * 8 + 'Registros ordenados')
+print(len(server_register_list[2]))
+for s in range(len(servers_list)):
+    for r in range(len(server_register_list[s])):
+        print(str(s)+" -> "+str(r))
+        print(servers_list[s] + " -> " + server_register_list[s][r])
+
+'''
+print("DC Power value")
+print("%.2f" % decoded)
+'''

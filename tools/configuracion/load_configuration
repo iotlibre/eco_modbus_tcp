@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+import configparser
+
+# objeto del parser
+parser = configparser.ConfigParser()
+parser.read('config.ini')
+
+# Lista para incluir los servidores
+servers_list=[]
+# Lista para incluir los registros
+registers_list=[]
+# Lista de registros ordenados por sservidor
+# [[aa,ab,ac],[ba,bb,bc],[ca,cb,cc],[da,db,dc]]
+server_register_list=[]
+# Lista de valores de lo registros ordenados por sservidor
+# [[aa,ab,ac],[ba,bb,bc],[ca,cb,cc],[da,db,dc]]
+server_values_list=[]
+
+# devuelve una list con todas las secciones
+sections = parser.sections()
+
+# Listas separadas de servidores y registros
+for section in sections:
+    if parser.has_option(section,'url'):
+        servers_list.append(section)
+    if parser.has_option(section,'server'):
+        registers_list.append(section)
+
+# Registros de cada servidor
+for server in servers_list:
+    registers_temp_list=[]
+    values_temp_list=[]
+    for register in registers_list:
+        if server == parser.get(register,'server'):
+            registers_temp_list.append(register)
+            # Lista para guardar los resultados
+            values_temp_list.append('3')
+    server_register_list.append(registers_temp_list)
+    server_values_list.append(values_temp_list)
+print("*" * 4 + ' Servidores')
+print(servers_list)
+print("*" * 4 + ' Registros agrupados por servidor')
+print(server_register_list)
+
+# Recorremos todos los servidores y sus registros
+# Los recorremos cada 60s (Falta)
+print("*" * 4 + ' Recorremos servidores y sus registros')
+for s in range(len(servers_list)):
+    tx_server = servers_list[s]
+    # Conexión al servidor con sus parámetros
+    # Si la conexión esta establecida:
+    #   Preguntamos los valores de las variables
+    print('**' + tx_server)
+    for r in range(len(server_register_list[s])):
+        # Preguntamos los valores de cada variable del servidor
+        tx_register = server_register_list[s][r]
+
+        print(tx_register +' -- ' + parser.get(tx_register,'start'))
+        # print(server_register_list[s][r] + " -> " + server_values_list[s][r])
+
+
+
+'''
+print("DC Power value")
+print("%.2f" % decoded)
+'''

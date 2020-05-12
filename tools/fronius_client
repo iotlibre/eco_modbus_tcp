@@ -1,0 +1,177 @@
+#!/usr/bin/env python
+from pymodbus.client.sync import ModbusTcpClient as ModbusClient
+from pymodbus.constants import Endian
+from pymodbus.payload import BinaryPayloadDecoder
+
+
+#cli = ModbusClient('127.0.0.1', port=5020)
+#cli = ModbusClient('192.168.1.131', port=5020)
+#cli = ModbusClient('192.168.1.133', port=5020)
+cli = ModbusClient('192.168.1.101', port=502)
+assert cli.connect()
+
+# Inicio de la consulta
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40091, count=2, unit=1)
+assert not res1.isError()
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+decoded = decoder.decode_32bit_float()
+#decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+print("-" * 30)
+print("Decoded Data")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+# Inicio de la consulta 2 W Aparente
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40095, count=2, unit=1)
+assert not res1.isError()
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+decoded = decoder.decode_32bit_float()
+#decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+print("-" * 30)
+print("Decoded Data")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+
+# Inicio de la consulta 3 Reactiva
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40097, count=2, unit=1)
+assert not res1.isError()
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+decoded = decoder.decode_32bit_float()
+#decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+print("-" * 30)
+print("Decoded Data Reactiva")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+
+
+# Inicio de la consulta AC Lifetime Energy production
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40101, count=2, unit=1)
+assert not res1.isError()
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+decoded = decoder.decode_32bit_float()
+#decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+print("-" * 30)
+print("AC Lifetime Energy production")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+
+# Inicio de la consulta: DC Power value
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40107, count=2, unit=1)
+assert not res1.isError()
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+decoded = decoder.decode_32bit_float()
+#decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+print("-" * 30)
+print("DC Power value")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+
+# Inicio de la consulta: SunSpec Modbus Map
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40000, count=2, unit=1)
+assert not res1.isError()
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+decoded = decoder.decode_32bit_uint()
+#decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+print("-" * 30)
+print("SunSpec Modbus Map")
+print(decoded)
+
+# fin de la consulta
+
+
+
+res2 = cli.read_holding_registers(40093, count=2, unit=1)
+assert not res2.isError()
+print("-" * 30)
+print("Registros")
+print(res2.registers)
+decoder = BinaryPayloadDecoder.fromRegisters(res2.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+decoded = decoder.decode_32bit_float()
+#decoded = decoder.decode_16bit_uint()
+print("-" * 30)
+print("Decoded Data")
+print("%.2f" % decoded)
+
+print("-" * 40)
+print("Bucle")
+
+for i in [40002, 40003]:
+    res3 = cli.read_holding_registers(i, count=1, unit=1)
+    assert not res3.isError()
+
+    print("-" * 30)
+    print("Registros")
+    print(res3.registers)
+    decoder = BinaryPayloadDecoder.fromRegisters(res3.registers,
+                                                 byteorder=Endian.Big,
+                                                 wordorder=Endian.Little)
+    #decoded = decoder.decode_32bit_float()
+    decoded = decoder.decode_16bit_uint()
+    print("-" * 30)
+    print("Decoded Data")
+    print("%.2f" % decoded)
