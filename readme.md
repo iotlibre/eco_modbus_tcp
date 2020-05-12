@@ -3,7 +3,7 @@
 <img src="https://github.com/iotlibre/eco_modbus_tcp/blob/master/client_modbus_tcp/docs/frame.png" align="right">
 EcoModbusTCP esta pensado para acceder a las los inversores solares y otros equipos que implementan MODBUS
 
-Este software esta hecho en Python mas concretamente en Python3 y complementa a otros sistemas de medida para la monitorización y el control energético de una vivienda o empresa. El software puede correr en cualquier servidor que tenga acceso al Inversor aconsejándose el uso de una Raspberry
+Este software esta hecho en Python mas concretamente en Python3 y complementa a otros sistemas de medida para la monitorización y el control energético de una vivienda o empresa. El software puede ejecutarse en cualquier servidor que implemete python aconsejándose el uso de una Raspberry
 
 ## Descripción de los ficheros
 Los directorios y ficheros que se incluyen son:
