@@ -30,7 +30,9 @@ tx_sent = 0
 
 #################################
 # Parseo de variables del .ini
+# Este fichero debe estar en el mimo directorio
 #################################
+
 parser = configparser.ConfigParser()
 parser.read('config.ini')
 
