@@ -14,6 +14,8 @@ assert cli.connect()
 # Inicio de la consulta F_Active_State_Code
 ''' La consulta muestra siempre 0'''
 
+
+
 #res = cli.read_input_registers(30002, count=3, unit=1)
 res1 = cli.read_holding_registers(213, count=1, unit=1)
 assert not res1.isError()
@@ -74,6 +76,31 @@ decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
 decoded = decoder.decode_32bit_uint()
 print("-" * 30)
 print("F_Site_Energy_Year")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+
+########################
+# Meter
+########################
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40069, count=2, unit=1)
+assert not res1.isError()
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+#decoded = decoder.decode_32bit_float()
+decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+#decoded = decoder.decode_32bit_uint()
+print("-" * 30)
+print("Meter")
 print("%.2f" % decoded)
 
 # fin de la consulta
@@ -403,13 +430,122 @@ print("%.2f" % decoded)
 
 
 ########################
-# DC Voltage
+# DC Voltage Los valores que devuelve el fronius no son correctos
 ########################
-''' Los valores que devuelve el fronius no son correctos'''
+
 
 
 #res = cli.read_input_registers(30002, count=3, unit=1)
-res1 = cli.read_holding_registers(40303, count=1, unit=1)
+res1 = cli.read_holding_registers(40283, count=1, unit=1)
+assert not res1.isError()
+
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+
+#decoded = decoder.decode_32bit_float()
+decoded = decoder.decode_16bit_uint()/10
+#decoded = decoder.decode_32bit_int()
+#decoded = decoder.decode_32bit_uint()
+print("-" * 30)
+print("DC Voltage 1")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+########################
+# DC Power (valores no correctos)
+########################
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40284, count=1, unit=1)
+assert not res1.isError()
+
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+
+#decoded = decoder.decode_32bit_float()
+decoded = decoder.decode_16bit_uint()/10
+#decoded = decoder.decode_32bit_int()
+#decoded = decoder.decode_32bit_uint()
+print("-" * 30)
+print("DC Power")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+
+
+########################
+# Lifetime Energy
+########################
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40285, count=2, unit=1)
+assert not res1.isError()
+
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+
+#decoded = decoder.decode_32bit_float()
+#decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+decoded = decoder.decode_32bit_uint()
+print("-" * 30)
+print("Lifetime Energy")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+
+########################
+# Temperature
+########################
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40289, count=1, unit=1)
+assert not res1.isError()
+
+decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
+                                             byteorder=Endian.Big,
+                                             wordorder=Endian.Big)
+
+print("-" * 30)
+print("Registros")
+print(res1.registers)
+
+#decoded = decoder.decode_32bit_float()
+decoded = decoder.decode_16bit_uint()/1000
+#decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_32bit_int()
+#decoded = decoder.decode_32bit_uint()
+print("-" * 30)
+print("Temperature")
+print("%.2f" % decoded)
+
+# fin de la consulta
+
+
+########################
+# Operating State
+########################
+
+#res = cli.read_input_registers(30002, count=3, unit=1)
+res1 = cli.read_holding_registers(40290, count=1, unit=1)
 assert not res1.isError()
 
 decoder = BinaryPayloadDecoder.fromRegisters(res1.registers,
@@ -422,10 +558,11 @@ print(res1.registers)
 
 #decoded = decoder.decode_32bit_float()
 decoded = decoder.decode_16bit_uint()
+#decoded = decoder.decode_16bit_uint()
 #decoded = decoder.decode_32bit_int()
 #decoded = decoder.decode_32bit_uint()
 print("-" * 30)
-print("DC Voltage 2")
+print("Operating State")
 print("%.2f" % decoded)
 
 # fin de la consulta
@@ -443,35 +580,18 @@ print("%.2f" % decoded)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+'''
 
 
 print("-" * 40)
 print("Bucle")
 
-for i in [40002, 40003]:
+for i in [40311, 40650, 40304, 40305, 40309, 40311]:
     res3 = cli.read_holding_registers(i, count=1, unit=1)
     assert not res3.isError()
 
     print("-" * 30)
-    print("Registros")
+    print(i)
     print(res3.registers)
     decoder = BinaryPayloadDecoder.fromRegisters(res3.registers,
                                                  byteorder=Endian.Big,
@@ -481,3 +601,7 @@ for i in [40002, 40003]:
     print("-" * 30)
     print("Decoded Data")
     print("%.2f" % decoded)
+    
+'''  
+    
+    
