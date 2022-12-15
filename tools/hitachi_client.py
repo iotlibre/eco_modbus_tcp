@@ -7,9 +7,6 @@ from pymodbus.payload import BinaryPayloadDecoder
 cli = ModbusClient('192.168.3.141', port=502)
 assert cli.connect()
 
-
-
-
 #############################
 # Inicio de la consulta
 #############################
@@ -30,7 +27,6 @@ print("Control de unidad Marcha/Paro")
 print("%.2f" % decoded)
 
 # fin de la consulta
-
 
 #############################
 # Inicio de la consulta
@@ -75,9 +71,6 @@ print("%.2f" % decoded)
 
 # fin de la consulta
 
-
-
-
 #############################
 # Inicio de la consulta
 #############################
@@ -120,9 +113,6 @@ print("Control de circuito 1 OTC para enfriamiento")
 print("%.2f" % decoded)
 
 # fin de la consulta
-
-
-
 
 #############################
 # Inicio de la consulta
@@ -1282,7 +1272,7 @@ print("%.2f" % decoded)
 
 # fin de la consulta
 
- 
+
 #############################
 # Inicio de la consulta
 ##############################
@@ -1302,7 +1292,7 @@ print("-" * 30)
 print("Td: Temperatura del gas de descarga")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 
@@ -1325,7 +1315,7 @@ print("-" * 30)
 print("Te: Temperatura de evaporación")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 #############################
@@ -1347,7 +1337,7 @@ print("-" * 30)
 print("EVI: Apertura de la válvula de expansión interior")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 #############################
@@ -1369,7 +1359,7 @@ print("-" * 30)
 print("EVO: Válvula de expansión exterior (0~100) %")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 
@@ -1392,7 +1382,7 @@ print("-" * 30)
 print("H4: Frecuencia de funcionamiento del inverter")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 
@@ -1415,7 +1405,7 @@ print("-" * 30)
 print("DI: Causa de la parada")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 
@@ -1438,7 +1428,7 @@ print("-" * 30)
 print("P1: Corriente de funcionamiento del compresor")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 #############################
@@ -1460,7 +1450,7 @@ print("-" * 30)
 print("MVP: Posición de la válvula mixta")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 #############################
@@ -1482,7 +1472,7 @@ print("-" * 30)
 print("Descarche")
 print("%.2f" % decoded)
 
-# fin de la consulta   
+# fin de la consulta
 
 
 #############################
@@ -1504,7 +1494,7 @@ print("-" * 30)
 print("Th: Ajuste de la temperatura del agua (Ttwo)")
 print("%.2f" % decoded)
 
-# fin de la consulta  
+# fin de la consulta
 
 
 
@@ -1527,7 +1517,7 @@ print("-" * 30)
 print("Caudal de agua")
 print("%.2f" % decoded)
 
-# fin de la consulta  
+# fin de la consulta
 
 
 
@@ -1550,7 +1540,7 @@ print("-" * 30)
 print("Velocidad de la bomba de agua")
 print("%.2f" % decoded)
 
-# fin de la consulta  
+# fin de la consulta
 
 
 
@@ -1574,7 +1564,7 @@ print("-" * 30)
 print("Estado del sistema 2")
 print("%.2f" % decoded)
 
-# fin de la consulta  
+# fin de la consulta
 
 
 
@@ -1597,10 +1587,7 @@ print("-" * 30)
 print("Número de alarma")
 print("%.2f" % decoded)
 
-# fin de la consulta  
-
-
-
+# fin de la consulta
 
 #############################
 # Inicio de la consulta
@@ -1621,9 +1608,7 @@ print("-" * 30)
 print("Temperatura de descarga R134a")
 print("%.2f" % decoded)
 
-# fin de la consulta  
-
-
+# fin de la consulta
 
 #############################
 # Inicio de la consulta
@@ -1644,9 +1629,7 @@ print("-" * 30)
 print("Temperatura de aspiración R134a")
 print("%.2f" % decoded)
 
-# fin de la consulta  
-
-
+# fin de la consulta
 
 #############################
 # Inicio de la consulta
@@ -1667,7 +1650,7 @@ print("-" * 30)
 print("Presión de descarga R134a")
 print("%.2f" % decoded)
 
-# fin de la consulta  
+# fin de la consulta
 
 #############################
 # Inicio de la consulta
@@ -1688,8 +1671,7 @@ print("-" * 30)
 print("Presión de aspiración R134a")
 print("%.2f" % decoded)
 
-# fin de la consulta  
-
+# fin de la consulta
 
 #############################
 # Inicio de la consulta
@@ -1710,9 +1692,7 @@ print("-" * 30)
 print("Frecuencia del compresor R134a")
 print("%.2f" % decoded)
 
-# fin de la consulta  
-
-
+# fin de la consulta
 
 #############################
 # Inicio de la consulta
@@ -1733,9 +1713,7 @@ print("-" * 30)
 print("Apertura de la válvula 2 de expansión interior R134a")
 print("%.2f" % decoded)
 
-# fin de la consulta  
-
-
+# fin de la consulta
 #############################
 # Inicio de la consulta
 ##############################
@@ -1755,8 +1733,7 @@ print("-" * 30)
 print("Valor actual del compresor R134a")
 print("%.2f" % decoded)
 
-# fin de la consulta  
-
+# fin de la consulta
 
 
 
